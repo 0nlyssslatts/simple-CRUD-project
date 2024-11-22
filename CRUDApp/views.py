@@ -59,3 +59,73 @@ def logout_view(request):
 @login_required(login_url='/login/')
 def index(request):
     return render(request, 'CRUDApp/index.html')
+
+
+@login_required(login_url='/login/')
+@csrf_exempt
+def notes(request):
+    if request.method =='GET':
+        try:
+            user = request.user
+            notes = user.notes.all()
+            note_list = []
+            for i in notes:
+                note = {
+                    'id': i.id,
+                    'title': i.title,
+                    'note': i.note,
+                    'created_at': i.created_at,
+                    'updated_at': i.updated_at
+                }
+                note_list.append(note)
+
+            return JsonResponse({
+                'status': 0,
+                'notes': note_list
+            })
+        except:
+            return JsonResponse({
+                'status': 1,
+            })
+            
+    try:
+        note = loads(request.body)
+        title = note['title']
+        content = note['content']
+        user = request.user
+        note_object = Notes.objects.create(user=user, title=title, note = content)
+        note_object.save()
+        return JsonResponse({'status':0})
+    except:
+        return JsonResponse({'status':1})
+    
+
+@login_required(login_url='/login/')
+@csrf_exempt
+def edit(request):
+    if request.method == 'POST':
+        try:
+            note_edit = loads(request.body)
+            note = Notes.objects.get(id=note_edit['id'])
+            note.title = note_edit['title']
+            note.note = note_edit['content']
+            note.save()
+            return JsonResponse({'status': 0})
+        except:
+            return JsonResponse({'status': 1})
+
+
+@login_required(login_url='/login/')
+@csrf_exempt
+def delete(request):
+    if request.method == 'POST':
+        try:
+            note_del = loads(request.body)
+            note_id = note_del['id']
+            note = Notes.objects.filter(id=note_id)
+            if len(note) != 0:
+                note.delete()
+            return JsonResponse({'status': 0})
+        except:
+            return JsonResponse({'status': 1})
+        
