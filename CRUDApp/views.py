@@ -129,3 +129,4 @@ def delete(request):
         except:
             return JsonResponse({'status': 1})
         
+
