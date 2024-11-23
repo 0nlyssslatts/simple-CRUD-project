@@ -1,6 +1,5 @@
 function getNote(id, title, content){
-    return(
-        `
+    const noteHTML = `
         <div class="note" data-id=${id}>
             <div class="note-title" data-id=${id}>
                 ${title}
@@ -14,14 +13,19 @@ function getNote(id, title, content){
             </div>
         </div>
         `
-    )
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = noteHTML;
+    return tempDiv;
 }
 
 async function updateNoteList(){
     const response = await fetch('/notes/')
-    const data = response.json()
+    const data = await response.json()
+    console.log(data) // -----------------------------------------------
+    console.log(data.status)
     if (data.status == 0){
         const notes = data.notes
+        console.log(notes)
         const notesList = document.querySelector('.notes')
         notesList.innerHTML = ""
         notes.forEach(note =>{
@@ -43,6 +47,7 @@ async function addOnClicks(){
             })
 
             request = await request.json()
+            console.log(request) //------------------------------------------
             if (request.status == 0){
                 await updateNoteList()
                 await addOnClicks()
@@ -102,6 +107,7 @@ async function addOnClicks(){
                     body: JSON.stringify(note)
                 })
                 request = await request.json();
+                console.log(request) //-----------------------------------------
                 if (request.status == 0) {
                     noteElement.removeChild(noteTitleEdit);
                     noteElement.removeChild(noteContentEdit);
@@ -123,7 +129,7 @@ async function addOnClicks(){
 document.querySelector("form").addEventListener('submit', async e => {
     e.preventDefault();
     const title = document.querySelector("form input[name='title']").value;
-    const content = document.querySelector("form input[name='content']").value;
+    const content = document.querySelector("form textarea[name='content']").value;
     if (content.length == 0) return
     const note = {
         title: title,
@@ -134,6 +140,7 @@ document.querySelector("form").addEventListener('submit', async e => {
         body: JSON.stringify(note)
     })
     request = await request.json();
+    console.log(request) // -------------------------------------------------
     if (request.status == 0) {
         document.querySelectorAll("form input").forEach(field => (!field.dataset["submit"]) ? field.value = "": null);
         await updateNoteList();
