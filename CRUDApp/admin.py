@@ -1,3 +1,5 @@
 from django.contrib import admin
-
-# Register your models here.
+from .models import User, Notes
+# Регистрация модели MyModel для административного сайта
+admin.site.register(User)
+admin.site.register(Notes)

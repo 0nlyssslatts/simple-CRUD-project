@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-y3w3y30m@25c_tdp@jvint42l%b35&wsqurkk5a9#+-u!k3($l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'CRUDApp',
 ]
 
@@ -80,7 +81,7 @@ DATABASES = {
         'NAME': 'crudprojectdb',
         'USER': 'crudLogin',
         'PASSWORD': '999',
-        'HOST': 'localhost',  
+        'HOST': 'pgdb',  
         'PORT': '5432',  
     }
 }
