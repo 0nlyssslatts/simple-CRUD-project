@@ -1,0 +1,39 @@
+name: DockerImage
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  container-build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build the Docker image
+      run: docker compose up --build -d
+      
+    - name: Check containers started successfully
+      run: |
+        for i in {1..30}; do
+          if curl -s http://localhost:8000 > /dev/null; then
+            echo "Контейнеры запущены!"
+            exit 0
+          fi
+          echo "Ожидание запуска контейнеров..."
+          sleep 2
+        done
+        echo "Истекло время ожидания запуска контейнеров"
+        exit 1
+
+    - name: Stopping containers
+      if: always()
+      run: |
+        docker compose down
