@@ -22,8 +22,8 @@ jobs:
       
     - name: Check containers started successfully
       run: |
-        for i in {1..80}; do
-          if curl -s http://localhost:8000 > /dev/null; then
+        for i in {1..30}; do
+          if curl http://localhost:8000 > ; then
             echo "Контейнеры запущены!"
             exit 0
           fi
